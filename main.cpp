@@ -70,11 +70,14 @@ int gcd(int a, int b) {
 }
 
 unsigned RSA_Cryptography::calE() {
-    unsigned i =2;
+    unsigned e = 2;
 
-    while (gcd(i,phi_n) != 1)
-        i++;
-    e = i;
+    while (e < phi_n){
+        if(gcd(e,phi_n) == 1)
+            break;
+        else
+            e++;
+    }
 
     if( e >= phi_n )
         throw (runtime_error("e is greater or equal to phi_n"));
