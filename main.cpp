@@ -97,10 +97,11 @@ unsigned RSA_Cryptography::encryption() {
     resN = calN();
     for (unsigned m = 2; m < resN; m++) {
         c = (pow(m,e));
-        resC = c % resN;
+        resC = fmod(c,resN);
     }
     return resC;
 }
+
 
 unsigned RSA_Cryptography::decryption() {
     unsigned resN = 0;
@@ -111,7 +112,7 @@ unsigned RSA_Cryptography::decryption() {
     resEncrypt_C = encryption();
     for (resEncrypt_C; resEncrypt_C < resN; resEncrypt_C++) {
         m = (pow(resEncrypt_C,d));
-        resM = m % resN;
+        resM = fmod(m,resN);
     }
     return resM;
 }
