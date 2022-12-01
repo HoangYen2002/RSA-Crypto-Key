@@ -135,3 +135,14 @@ int main() {
     }
     return 0;
 }
+
+// Enter Prime number p: 
+// 3
+// Enter Prime number q:
+// 97
+// Result of n = p*q : 291
+// Result of phi_n = (p - 1) * (q - 1) : 192
+// Result of e : 1998094957
+// Result of d as e*d = 1 mod n : 999047479
+// Encryption: 0
+// Decryption: 0

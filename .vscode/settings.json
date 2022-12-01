@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "*.sql": "sql",
+        "*.js": "javascriptreact",
+        "ostream": "cpp"
+    }
+}
