@@ -9,22 +9,22 @@ using namespace std;
 class RSA_Cryptography {
 
 public:
-    unsigned p;
-    unsigned q;
-    unsigned n; // n = p*q
-    unsigned phi_n; // phi_n = (p-1)*(q-1)
-    unsigned e; // e < phi_n; e and phi_n co-prime
-    unsigned d; // (e*d) mod phi_n = 1
+    unsigned int p;
+    unsigned int q;
+    unsigned int n; // n = p*q
+    unsigned int phi_n; // phi_n = (p-1)*(q-1)
+    unsigned int e; // e < phi_n; e and phi_n co-prime
+    unsigned int d; // (e*d) mod phi_n = 1
 
     void check_primality();
     void inputKey();
-    unsigned calN();
-    unsigned calPhi_n();
-    unsigned calE();
-    unsigned calD();
+    unsigned int calN();
+    unsigned int calPhi_n();
+    unsigned int calE();
+    unsigned int calD();
 
-    unsigned encryption();
-    unsigned decryption();
+    unsigned int encryption();
+    unsigned int decryption();
 
 };
 
@@ -36,9 +36,9 @@ void RSA_Cryptography::inputKey() {
 }
 
 void RSA_Cryptography::check_primality() {
-    vector<unsigned> p_factor;
-    vector<unsigned> q_factor;
-    for (unsigned i = 2; i <= static_cast<unsigned>(sqrt(p)); i++) {
+    vector<unsigned int> p_factor;
+    vector<unsigned int> q_factor;
+    for (unsigned int i = 2; i <= static_cast<unsigned int>(sqrt(p)); i++) {
         if (p % i == 0) {
             p_factor.push_back(i);
             p_factor.push_back(p % i);
@@ -46,7 +46,7 @@ void RSA_Cryptography::check_primality() {
     }
 
 
-    for (unsigned i = 2; i <= static_cast<unsigned>(sqrt(q)); i++) {
+    for (unsigned int i = 2; i <= static_cast<unsigned int>(sqrt(q)); i++) {
         if (q % i == 0) {
             q_factor.push_back(i);
             q_factor.push_back(q % i);
@@ -57,11 +57,11 @@ void RSA_Cryptography::check_primality() {
         throw (runtime_error("non prime input error!"));
 }
 
-unsigned RSA_Cryptography::calN() {
+unsigned int RSA_Cryptography::calN() {
     return p * q;
 }
 
-unsigned RSA_Cryptography::calPhi_n() {
+unsigned int RSA_Cryptography::calPhi_n() {
     return (p - 1) * (q - 1);
 }
 
@@ -71,8 +71,8 @@ int gcd(int a, int b) {
     return gcd(b, a % b);
 }
 
-unsigned RSA_Cryptography::calE() {
-    unsigned i = 2;
+unsigned int RSA_Cryptography::calE() {
+    unsigned int i = 2;
 
     while (gcd(i, phi_n) != 1)
         i++;
@@ -82,8 +82,8 @@ unsigned RSA_Cryptography::calE() {
         throw (runtime_error("e is greater or equal to phi_n"));
 }
 
-unsigned RSA_Cryptography::calD() {
-    unsigned k = 1;
+unsigned int RSA_Cryptography::calD() {
+    unsigned int k = 1;
 
     while (((k * phi_n) + 1) % e != 0)
         k++;
@@ -92,23 +92,23 @@ unsigned RSA_Cryptography::calD() {
     return d;
 }
 
-unsigned RSA_Cryptography::encryption() {
-    unsigned c = 1;
-    unsigned resC = 1;
-    unsigned resN = 0;
+unsigned int RSA_Cryptography::encryption() {
+    unsigned int c = 1;
+    unsigned int resC = 1;
+    unsigned int resN = 0;
     resN = calN();
-    for (unsigned m = 2; m < resN; m++) {
+    for (unsigned int m = 2; m < resN; m++) {
         c = (pow(m, e));
         resC = c % resN;
     }
     return resC;
 }
 
-unsigned RSA_Cryptography::decryption() {
-    unsigned resN = 0;
-    unsigned resEncrypt_C = 0;
-    unsigned m = 0;
-    unsigned resM = 0;
+unsigned int RSA_Cryptography::decryption() {
+    unsigned int resN = 0;
+    unsigned int resEncrypt_C = 0;
+    unsigned int m = 0;
+    unsigned int resM = 0;
     resN = calN();
     resEncrypt_C = encryption();
     for (resEncrypt_C; resEncrypt_C < resN; resEncrypt_C++) {
