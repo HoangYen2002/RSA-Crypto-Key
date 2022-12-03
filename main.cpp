@@ -4,7 +4,7 @@
 #include <numeric>
 using namespace std;
 
-// huy
+// huy new
 
 class RSA_Cryptography {
 
@@ -38,31 +38,31 @@ void RSA_Cryptography::inputKey() {
 void RSA_Cryptography::check_primality() {
     vector<unsigned> p_factor;
     vector<unsigned> q_factor;
-    for (unsigned i = 2; i <= static_cast<unsigned>(sqrt(p)); i++){
-        if(p % i == 0){
+    for (unsigned i = 2; i <= static_cast<unsigned>(sqrt(p)); i++) {
+        if (p % i == 0) {
             p_factor.push_back(i);
-            p_factor.push_back(p%i);
+            p_factor.push_back(p % i);
         }
     }
 
 
-    for (unsigned i = 2; i <= static_cast<unsigned>(sqrt(q)); i++){
-        if(q % i == 0){
+    for (unsigned i = 2; i <= static_cast<unsigned>(sqrt(q)); i++) {
+        if (q % i == 0) {
             q_factor.push_back(i);
-            q_factor.push_back(q%i);
+            q_factor.push_back(q % i);
         }
     }
 
-    if(p_factor.size()!= 0 || q_factor.size()!=0)
+    if (p_factor.size() != 0 || q_factor.size() != 0)
         throw (runtime_error("non prime input error!"));
 }
 
 unsigned RSA_Cryptography::calN() {
-    return p*q;
+    return p * q;
 }
 
 unsigned RSA_Cryptography::calPhi_n() {
-    return (p-1)*(q-1);
+    return (p - 1) * (q - 1);
 }
 
 int gcd(int a, int b) {
@@ -72,22 +72,22 @@ int gcd(int a, int b) {
 }
 
 unsigned RSA_Cryptography::calE() {
-    unsigned i =2;
+    unsigned i = 2;
 
-    while (gcd(i,phi_n) != 1)
+    while (gcd(i, phi_n) != 1)
         i++;
     e = i;
 
-    if( e >= phi_n )
+    if (e >= phi_n)
         throw (runtime_error("e is greater or equal to phi_n"));
 }
 
 unsigned RSA_Cryptography::calD() {
-    unsigned k=1;
+    unsigned k = 1;
 
     while (((k * phi_n) + 1) % e != 0)
         k++;
-    d = ((k*phi_n) + 1) / e;
+    d = ((k * phi_n) + 1) / e;
 
     return d;
 }
@@ -98,7 +98,7 @@ unsigned RSA_Cryptography::encryption() {
     unsigned resN = 0;
     resN = calN();
     for (unsigned m = 2; m < resN; m++) {
-        c = (pow(m,e));
+        c = (pow(m, e));
         resC = c % resN;
     }
     return resC;
@@ -112,7 +112,7 @@ unsigned RSA_Cryptography::decryption() {
     resN = calN();
     resEncrypt_C = encryption();
     for (resEncrypt_C; resEncrypt_C < resN; resEncrypt_C++) {
-        m = (pow(resEncrypt_C,d));
+        m = (pow(resEncrypt_C, d));
         resM = m % resN;
     }
     return resM;
@@ -130,7 +130,7 @@ int main() {
         cout << "Encryption: " << rsa.encryption() << endl;
         cout << "Decryption: " << rsa.decryption() << endl;
     }
-    catch (runtime_error &error) {
+    catch (runtime_error& error) {
         cout << error.what() << endl;
     }
     return 0;
