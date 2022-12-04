@@ -15,6 +15,8 @@ public:
     unsigned int phi_n; // phi_n = (p-1)*(q-1)
     unsigned int e; // e < phi_n; e and phi_n co-prime
     unsigned int d; // (e*d) mod phi_n = 1
+    int length_d;
+
 
     void check_primality();
     void inputKey();
@@ -23,10 +25,25 @@ public:
     unsigned int calE();
     unsigned int calD();
 
+    void set_length_D();
+
+    bool check_length_D();
+
+
     unsigned int encryption();
     unsigned int decryption();
 
 };
+
+// return bits in decimal
+int get_bits(unsigned int number) {
+    int bits = 0;
+    while (number > 0) {
+        number >>= 1;
+        bits++;
+    }
+    return bits;
+}
 
 void RSA_Cryptography::inputKey() {
     cout << "Enter Prime number p: " << endl;
@@ -118,6 +135,14 @@ unsigned int RSA_Cryptography::decryption() {
     return resM;
 }
 
+void RSA_Cryptography::set_length_D() {
+    cout << "Enter length of d: " << endl;
+    cin >> length_d;
+
+}
+
+
+
 int main() {
     try {
         RSA_Cryptography rsa;
@@ -129,6 +154,7 @@ int main() {
         cout << "Result of d as e*d = 1 mod n : " << rsa.calD() << endl;
         cout << "Encryption: " << rsa.encryption() << endl;
         cout << "Decryption: " << rsa.decryption() << endl;
+
     }
     catch (runtime_error& error) {
         cout << error.what() << endl;
