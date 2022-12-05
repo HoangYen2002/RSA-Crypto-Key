@@ -102,9 +102,23 @@ unsigned int RSA_Cryptography::calE() {
 unsigned int RSA_Cryptography::calD() {
     unsigned int k = 1;
 
-    while (((k * phi_n) + 1) % e != 0)
-        k++;
-    d = ((k * phi_n) + 1) / e;
+
+    // while (((k * phi_n) + 1) % e != 0)
+    //     k++;
+    // d = ((k * phi_n) + 1) / e;
+
+    d = 0;
+    while (true) {
+        while (((k * phi_n) + 1) % e != 0) {
+            k++;
+        }
+        d = ((k * phi_n) + 1) / e;
+        cout << "bits: " << get_bits(d) << endl;
+        if (get_bits(d) == length_d) {
+            break;
+        }
+    }
+
 
     return d;
 }
@@ -148,6 +162,8 @@ int main() {
         RSA_Cryptography rsa;
         rsa.inputKey();
         rsa.check_primality();
+        rsa.set_length_D();
+        cout << "length of d: " << rsa.length_d << endl;
         cout << "Result of n = p*q : " << rsa.calN() << endl;
         cout << "Result of phi_n = (p - 1) * (q - 1) : " << rsa.calPhi_n() << endl;
         cout << "Result of e : " << rsa.calE() << endl;
