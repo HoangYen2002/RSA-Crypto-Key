@@ -156,6 +156,8 @@ void RSA_Cryptography::output() {
     cout << "phi_n = " << phi_n << endl;
     cout << "e = " << e << endl;
     cout << "d = " << d << endl;
+    cout << "Encryption: " << encryption() << endl;
+    cout << "Decryption: " << decryption() << endl;
 }
 
 
