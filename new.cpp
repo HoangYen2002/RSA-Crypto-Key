@@ -6,47 +6,66 @@
 #include<cstdlib>
 using namespace std;
 
-int random(int min, int max) {
+
+
+long long random(long long min, long long max) {
     return min + rand() % (max - min + 1);
 }
 
-int gcd(int a, int b) {
+long long gcd(long long a, long long b) {
     if (b == 0)
         return a;
     return gcd(b, a % b);
 }
 
+int check_bit_length(long long n) {
+    int bits = 0;
+    while (n > 0) {
+        n >>= 1;
+        bits++;
+    }
+    return bits;
+}
+
 class RSA_Cryptography
 {
 private:
-    int p; // p is prime
-    int q; // q is prime
-    int n; // n = p*q
-    int phi_n; // phi_n = (p-1)*(q-1)
-    int e; // e < phi_n; e and phi_n co-prime
-    int d; // (e*d) = 1 mod phi_n
+    long long p; // p is prime
+    long long q; // q is prime
+    long long n; // n = p*q
+    long long phi_n; // phi_n = (p-1)*(q-1)
+    long long e; // e < phi_n; e and phi_n co-prime
+    long long d; // (e*d) = 1 mod phi_n
+    int bit_length;
 
-public: 
+public:
     RSA_Cryptography();
-    RSA_Cryptography(int p, int q);
-    int get_p();
-    int get_q();
-    void set_p(int p);
-    void set_q(int q);
-    
+    RSA_Cryptography(long long p, long long q);
+    long long get_p();
+    long long get_q();
+    int get_bit_length();
+    void set_p(long long p);
+    void set_q(long long q);
+    void set_bit_length(int bit_length);
+
+
+
     void input();
     void calculate();
     void calculate_e();
     void calculate_d();
     void output();
-    int encryption();
-    int decryption();
+    long long encryption();
+    long long decryption();
+
+
+
 
 };
 
-bool isPrime(int n) {
+bool isPrime(long long n) {
     if (n < 2) return false;
-    for (int i = 2; i <= sqrt(n); i++) {
+    for (long long i = 2; i <= sqrt(n); i++) {
         if (n % i == 0) return false;
     }
     return true;
@@ -59,27 +78,35 @@ RSA_Cryptography::RSA_Cryptography() {
     phi_n = 0;
     e = 0;
     d = 0;
+    bit_length = 8;
 }
-RSA_Cryptography::RSA_Cryptography(int p, int q) {
+RSA_Cryptography::RSA_Cryptography(long long p, long long q) {
     this->p = p;
     this->q = q;
     n = p * q;
     phi_n = (p - 1) * (q - 1);
     e = random(1, phi_n);
     d = 0;
+    bit_length = 8;
 }
 
-int RSA_Cryptography::get_p() {
+long long RSA_Cryptography::get_p() {
     return p;
 }
-int RSA_Cryptography::get_q() {
+long long RSA_Cryptography::get_q() {
     return q;
 }
-void RSA_Cryptography::set_p(int p) {
+int RSA_Cryptography::get_bit_length() {
+    return bit_length;
+}
+void RSA_Cryptography::set_p(long long p) {
     this->p = p;
 }
-void RSA_Cryptography::set_q(int q) {
+void RSA_Cryptography::set_q(long long q) {
     this->q = q;
+}
+void RSA_Cryptography::set_bit_length(int bit_length) {
+    this->bit_length = bit_length;
 }
 void RSA_Cryptography::input() {
     cout << "Enter Prime number p: " << endl;
@@ -94,6 +121,9 @@ void RSA_Cryptography::input() {
         cout << "q is not prime, please enter again: " << endl;
         cin >> q;
     }
+    cout << "bit length: 512, 1024, 2048" << endl;
+    cout << "Enter bit length: " << endl;
+    cin >> bit_length;
 }
 
 void RSA_Cryptography::calculate_e() {
@@ -106,11 +136,14 @@ void RSA_Cryptography::calculate_e() {
 }
 
 void RSA_Cryptography::calculate_d() {
-    int k = 1;
+    long long k = 1;
+    // (e*d) = 1 mod phi_n && bit length of d = bit length
     while (true) {
         if ((k * phi_n + 1) % e == 0) {
             d = (k * phi_n + 1) / e;
-            break;
+            if (check_bit_length(d) == bit_length) {
+                break;
+            }
         }
         k++;
     }
@@ -123,23 +156,23 @@ void RSA_Cryptography::calculate() {
     calculate_d();
 }
 
-int RSA_Cryptography::encryption() {
-    int c = 1;
-    int resC = 1;
-    int resN = 0;
+long long RSA_Cryptography::encryption() {
+    long long c = 1;
+    long long resC = 1;
+    long long resN = 0;
     resN = n;
-    for(int m = 2; m <= resN; m++) {
+    for (long long m = 2; m <= resN; m++) {
         c = pow(m, e);
         resC = c % resN;
     }
-    return resC; 
+    return resC;
 }
 
-int RSA_Cryptography::decryption() {
-    int resN = 0;
-    int resEncrypt_C = 0;
-    int m = 0;
-    int resM = 0;
+long long RSA_Cryptography::decryption() {
+    long long resN = 0;
+    long long resEncrypt_C = 0;
+    long long m = 0;
+    long long resM = 0;
     resN = n;
     resEncrypt_C = encryption();
     for (resEncrypt_C; resEncrypt_C < resN; resEncrypt_C++) {
@@ -160,7 +193,6 @@ void RSA_Cryptography::output() {
     cout << "Decryption: " << decryption() << endl;
 }
 
-
 int main() {
     srand(time(NULL));
     RSA_Cryptography rsa;
@@ -169,7 +201,7 @@ int main() {
     cout << rsa.get_q() << endl;
     rsa.calculate();
     rsa.output();
-    
+
 
     return 0;
 }
