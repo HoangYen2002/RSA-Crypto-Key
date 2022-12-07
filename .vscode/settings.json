@@ -1,7 +1,8 @@
 {
-    "files.associations": {
-        "*.sql": "sql",
-        "*.js": "javascriptreact",
-        "ostream": "cpp"
-    }
+  "files.associations": {
+    "*.sql": "sql",
+    "*.js": "javascriptreact",
+    "ostream": "cpp",
+    "iostream": "cpp"
+  }
 }

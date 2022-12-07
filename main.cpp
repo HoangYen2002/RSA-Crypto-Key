@@ -37,7 +37,7 @@ public:
 
 // return bits in decimal
 int get_bits(unsigned int number) {
-    int bits = 0;
+    long long bits = 0;
     while (number > 0) {
         number >>= 1;
         bits++;
@@ -113,10 +113,6 @@ unsigned int RSA_Cryptography::calD() {
             k++;
         }
         d = ((k * phi_n) + 1) / e;
-        cout << "bits: " << get_bits(d) << endl;
-        if (get_bits(d) == length_d) {
-            break;
-        }
     }
 
 
