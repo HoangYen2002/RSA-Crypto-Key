@@ -1,7 +1,7 @@
-#include<iostream>
-#include<cmath>
-#include<vector>
-#include<numeric>
+#include <iostream>
+#include <cmath>
+#include <vector>
+#include <numeric>
 #include<ctime>
 #include<cstdlib>
 using namespace std;
@@ -30,6 +30,10 @@ public:
     void set_q(int q);
     
     void input();
+    void calculate();
+    void calculate_e();
+    void calculate_d();
+    void output();
 
 };
 
@@ -85,12 +89,54 @@ void RSA_Cryptography::input() {
     }
 }
 
+void RSA_Cryptography::calculate_e() {
+    int i = 1;
+    while(gcd(i, phi_n) != 1) {
+        i++;
+    }
+    e = i;
+    if (e >= phi_n) {
+        throw (runtime_error("e is greater or equal to phi_n"));
+    }
+}
+
+void RSA_Cryptography::calculate_d() {
+    int k = 1;
+    while (true) {
+        if ((k * phi_n + 1) % e == 0) {
+            d = (k * phi_n + 1) / e;
+            break;
+        }
+        k++;
+    }
+}
+
+void RSA_Cryptography::calculate() {
+    n = p * q;
+    phi_n = (p - 1) * (q - 1);
+    calculate_e();
+    calculate_d();
+}
+
+void RSA_Cryptography::output() {
+    cout << "p = " << p << endl;
+    cout << "q = " << q << endl;
+    cout << "n = " << n << endl;
+    cout << "phi_n = " << phi_n << endl;
+    cout << "e = " << e << endl;
+    cout << "d = " << d << endl;
+}
+
+
 int main() {
     srand(time(NULL));
     RSA_Cryptography rsa;
     rsa.input();
     cout << rsa.get_p() << endl;
     cout << rsa.get_q() << endl;
+    rsa.calculate();
+    rsa.output();
+    
 
     return 0;
 }

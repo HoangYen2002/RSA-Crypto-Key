@@ -3,7 +3,8 @@
     "*.sql": "sql",
     "*.js": "javascriptreact",
     "ostream": "cpp",
-    "iostream": "cpp"
+    "iostream": "cpp",
+    "cmath": "cpp"
   },
   "editor.quickSuggestions": {
     "comments": "off",
