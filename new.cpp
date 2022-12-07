@@ -10,6 +10,11 @@ int random(int min, int max) {
     return min + rand() % (max - min + 1);
 }
 
+int gcd(int a, int b) {
+    if (b == 0)
+        return a;
+    return gcd(b, a % b);
+}
 
 class RSA_Cryptography
 {
@@ -21,7 +26,7 @@ private:
     int e; // e < phi_n; e and phi_n co-prime
     int d; // (e*d) = 1 mod phi_n
 
-public:
+public: 
     RSA_Cryptography();
     RSA_Cryptography(int p, int q);
     int get_p();
@@ -34,6 +39,8 @@ public:
     void calculate_e();
     void calculate_d();
     void output();
+    int encryption();
+    int decryption();
 
 };
 
@@ -90,13 +97,11 @@ void RSA_Cryptography::input() {
 }
 
 void RSA_Cryptography::calculate_e() {
-    int i = 1;
-    while(gcd(i, phi_n) != 1) {
-        i++;
-    }
-    e = i;
-    if (e >= phi_n) {
-        throw (runtime_error("e is greater or equal to phi_n"));
+    while (true) {
+        if (gcd(e, phi_n) == 1) {
+            break;
+        }
+        e = random(1, phi_n);
     }
 }
 
@@ -116,6 +121,32 @@ void RSA_Cryptography::calculate() {
     phi_n = (p - 1) * (q - 1);
     calculate_e();
     calculate_d();
+}
+
+int RSA_Cryptography::encryption() {
+    int c = 1;
+    int resC = 1;
+    int resN = 0;
+    resN = n;
+    for(int m = 2; m <= resN; m++) {
+        c = pow(m, e);
+        resC = c % resN;
+    }
+    return resC; 
+}
+
+int RSA_Cryptography::decryption() {
+    int resN = 0;
+    int resEncrypt_C = 0;
+    int m = 0;
+    int resM = 0;
+    resN = n;
+    resEncrypt_C = encryption();
+    for (resEncrypt_C; resEncrypt_C < resN; resEncrypt_C++) {
+        m = (pow(resEncrypt_C, d));
+        resM = m % resN;
+    }
+    return resM;
 }
 
 void RSA_Cryptography::output() {
@@ -141,3 +172,19 @@ int main() {
     return 0;
 }
 
+
+
+// p = 3
+// q = 97
+// n = 291
+// phi_n = 192
+// e = 1
+// d = 193
+
+
+// p = 3
+// q = 97
+// n = 291
+// phi_n = 192
+// e = 143
+// d = 47
