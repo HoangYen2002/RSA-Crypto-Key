@@ -4,5 +4,10 @@
     "*.js": "javascriptreact",
     "ostream": "cpp",
     "iostream": "cpp"
+  },
+  "editor.quickSuggestions": {
+    "comments": "off",
+    "strings": "off",
+    "other": "off"
   }
 }

@@ -2,20 +2,96 @@
 #include<cmath>
 #include<vector>
 #include<numeric>
-
+#include<ctime>
+#include<cstdlib>
 using namespace std;
 
-class RSA_Cryptography 
+int random(int min, int max) {
+    return min + rand() % (max - min + 1);
+}
+
+
+class RSA_Cryptography
 {
 private:
-    
+    int p; // p is prime
+    int q; // q is prime
+    int n; // n = p*q
+    int phi_n; // phi_n = (p-1)*(q-1)
+    int e; // e < phi_n; e and phi_n co-prime
+    int d; // (e*d) = 1 mod phi_n
 
 public:
+    RSA_Cryptography();
+    RSA_Cryptography(int p, int q);
+    int get_p();
+    int get_q();
+    void set_p(int p);
+    void set_q(int q);
+    
+    void input();
 
 };
 
+bool isPrime(int n) {
+    if (n < 2) return false;
+    for (int i = 2; i <= sqrt(n); i++) {
+        if (n % i == 0) return false;
+    }
+    return true;
+}
 
+RSA_Cryptography::RSA_Cryptography() {
+    p = 0;
+    q = 0;
+    n = 0;
+    phi_n = 0;
+    e = 0;
+    d = 0;
+}
+RSA_Cryptography::RSA_Cryptography(int p, int q) {
+    this->p = p;
+    this->q = q;
+    n = p * q;
+    phi_n = (p - 1) * (q - 1);
+    e = random(1, phi_n);
+    d = 0;
+}
+
+int RSA_Cryptography::get_p() {
+    return p;
+}
+int RSA_Cryptography::get_q() {
+    return q;
+}
+void RSA_Cryptography::set_p(int p) {
+    this->p = p;
+}
+void RSA_Cryptography::set_q(int q) {
+    this->q = q;
+}
+void RSA_Cryptography::input() {
+    cout << "Enter Prime number p: " << endl;
+    cin >> p;
+    while (!isPrime(p)) {
+        cout << "p is not prime, please enter again: " << endl;
+        cin >> p;
+    }
+    cout << "Enter Prime number q: " << endl;
+    cin >> q;
+    while (!isPrime(q)) {
+        cout << "q is not prime, please enter again: " << endl;
+        cin >> q;
+    }
+}
 
 int main() {
+    srand(time(NULL));
+    RSA_Cryptography rsa;
+    rsa.input();
+    cout << rsa.get_p() << endl;
+    cout << rsa.get_q() << endl;
+
     return 0;
 }
+
