@@ -2,39 +2,82 @@
 #include <cmath>
 #include <vector>
 #include <numeric>
+#include<ctime>
+#include<cstdlib>
 using namespace std;
 
-// huy new
+// file code sử dụng
 
-class RSA_Cryptography {
+
+long long random(long long min, long long max) {
+    return min + rand() % (max - min + 1);
+}
+
+long long gcd(long long a, long long b) {
+    if (b == 0)
+        return a;
+    return gcd(b, a % b);
+}
+
+int check_bit_length( long long n) {
+    int bits = 0;
+    while (n > 0) {
+        n >>= 1;
+        bits++;
+    }
+    return bits;
+}
+
+
+
+class RSA_Cryptography
+{
+private:
+    long long p; // p is prime
+    long long q; // q is prime
+    long long n; // n = p*q
+    long long phi_n; // phi_n = (p-1)*(q-1)
+    long long e; // e < phi_n; e and phi_n co-prime
+    long long d; // (e*d) = 1 mod phi_n
+    int bit_length;
 
 public:
-    unsigned int p;
-    unsigned int q;
-    unsigned int n; // n = p*q
-    unsigned int phi_n; // phi_n = (p-1)*(q-1)
-    unsigned int e; // e < phi_n; e and phi_n co-prime
-    unsigned int d; // (e*d) mod phi_n = 1
-    int length_d;
+    RSA_Cryptography();
+    RSA_Cryptography(long long p, long long q);
+    long long get_p();
+    long long get_q();
+    int get_bit_length();
+    void set_p(long long p);
+    void set_q(long long q);
+    void set_bit_length(int bit_length);
 
 
-    void check_primality();
-    void inputKey();
-    unsigned int calN();
-    unsigned int calPhi_n();
-    unsigned int calE();
-    unsigned int calD();
 
-    void set_length_D();
+    void input();
+    void calculate();
+    void calculate_e();
+    void calculate_d();
+    void output();
+    long long encryption();
+    long long decryption();
 
-    bool check_length_D();
+
     unsigned int mod_power(unsigned int a, unsigned int b, unsigned int p);
     void fermat_testing();
 
-    unsigned int encryption();
-    unsigned int decryption();
+
 
 };
+
+bool isPrime(long long n) {
+    if (n < 2) return false;
+    for (long long i = 2; i <= sqrt(n); i++) {
+        if (n % i == 0) return false;
+    }
+    return true;
+}
+
+
 unsigned int RSA_Cryptography::mod_power(unsigned int a, unsigned int b, unsigned int p) {
     if (b == 1) {
         return a % p;
@@ -50,12 +93,6 @@ unsigned int RSA_Cryptography::mod_power(unsigned int a, unsigned int b, unsigne
     }
 }
 void RSA_Cryptography::fermat_testing() {
-    unsigned int p, q;
-    cout << "Enter Prime number p: " << endl;
-    cin >> p;
-    cout << "Enter Prime number q: " << endl;
-    cin >> q;
-
     unsigned int a = 2 + rand() % (p - 3);
     if (gcd(a, p) != 1) {
         throw (runtime_error("non prime input error!"));
@@ -77,108 +114,106 @@ void RSA_Cryptography::fermat_testing() {
     }
 
 }
-// return bits in decimal
-int get_bits(unsigned int number) {
-    long long bits = 0;
-    while (number > 0) {
-        number >>= 1;
-        bits++;
-    }
-    return bits;
+RSA_Cryptography::RSA_Cryptography() {
+    p = 0;
+    q = 0;
+    n = 0;
+    phi_n = 0;
+    e = 0;
+    d = 0;
+    bit_length = 8;
+}
+RSA_Cryptography::RSA_Cryptography(long long p, long long q) {
+    this->p = p;
+    this->q = q;
+    n = p * q;
+    phi_n = (p - 1) * (q - 1);
+    e = random(1, phi_n);
+    d = 0;
+    bit_length = 8;
 }
 
-void RSA_Cryptography::inputKey() {
+long long RSA_Cryptography::get_p() {
+    return p;
+}
+long long RSA_Cryptography::get_q() {
+    return q;
+}
+int RSA_Cryptography::get_bit_length() {
+    return bit_length;
+}
+void RSA_Cryptography::set_p(long long p) {
+    this->p = p;
+}
+void RSA_Cryptography::set_q(long long q) {
+    this->q = q;
+}
+void RSA_Cryptography::set_bit_length(int bit_length) {
+    this->bit_length = bit_length;
+}
+void RSA_Cryptography::input() {
     cout << "Enter Prime number p: " << endl;
     cin >> p;
+    while (!isPrime(p)) {
+        cout << "p is not prime, please enter again: " << endl;
+        cin >> p;
+    }
     cout << "Enter Prime number q: " << endl;
     cin >> q;
-}
-
-void RSA_Cryptography::check_primality() {
-    vector<unsigned int> p_factor;
-    vector<unsigned int> q_factor;
-    for (unsigned int i = 2; i <= static_cast<unsigned int>(sqrt(p)); i++) {
-        if (p % i == 0) {
-            p_factor.push_back(i);
-            p_factor.push_back(p % i);
-        }
+    while (!isPrime(q)) {
+        cout << "q is not prime, please enter again: " << endl;
+        cin >> q;
     }
+    // cout << "bit length: 512, 1024, 2048" << endl;
+    // cout << "Enter bit length: " << endl;
+    // cin >> bit_length;
+}
 
-
-    for (unsigned int i = 2; i <= static_cast<unsigned int>(sqrt(q)); i++) {
-        if (q % i == 0) {
-            q_factor.push_back(i);
-            q_factor.push_back(q % i);
+void RSA_Cryptography::calculate_e() {
+    while (true) {
+        if (gcd(e, phi_n) == 1) {
+            break;
         }
+        e = random(1, phi_n);
     }
-
-    if (p_factor.size() != 0 || q_factor.size() != 0)
-        throw (runtime_error("non prime input error!"));
 }
 
-unsigned int RSA_Cryptography::calN() {
-    return p * q;
-}
-
-unsigned int RSA_Cryptography::calPhi_n() {
-    return (p - 1) * (q - 1);
-}
-
-int gcd(int a, int b) {
-    if (b == 0)
-        return a;
-    return gcd(b, a % b);
-}
-
-unsigned int RSA_Cryptography::calE() {
-    unsigned int i = 2;
-
-    while (gcd(i, phi_n) != 1)
-        i++;
-    e = i;
-
-    if (e >= phi_n)
-        throw (runtime_error("e is greater or equal to phi_n"));
-}
-
-unsigned int RSA_Cryptography::calD() {
+void RSA_Cryptography::calculate_d() {
     unsigned int k = 1;
 
+    unsigned int resE = e;
+    while (((k * phi_n) + 1) % resE != 0)
+        // cout << resE << endl;
+        k++;
+    d = ((k * phi_n) + 1) / resE;
 
-    // while (((k * phi_n) + 1) % e != 0)
-    //     k++;
-    // d = ((k * phi_n) + 1) / e;
-
-    d = 0;
-    while (true) {
-        while (((k * phi_n) + 1) % e != 0) {
-            k++;
-        }
-        d = ((k * phi_n) + 1) / e;
-    }
-
-
-    return d;
 }
 
-unsigned int RSA_Cryptography::encryption() {
-    unsigned int c = 1;
-    unsigned int resC = 1;
-    unsigned int resN = 0;
-    resN = calN();
-    for (unsigned int m = 2; m < resN; m++) {
-        c = (pow(m, e));
+void RSA_Cryptography::calculate() {
+    n = p * q;
+    phi_n = (p - 1) * (q - 1);
+    calculate_e();
+    calculate_d();
+}
+
+long long RSA_Cryptography::encryption() {
+    long long c = 1;
+    long long resC = 1;
+    long long resN = 0;
+    resN = n;
+    for (long long m = 2; m <= resN; m++) {
+        c = pow(m, e);
         resC = c % resN;
     }
     return resC;
 }
 
-unsigned int RSA_Cryptography::decryption() {
-    unsigned int resN = 0;
-    unsigned int resEncrypt_C = 0;
-    unsigned int m = 0;
-    unsigned int resM = 0;
-    resN = calN();
+long long RSA_Cryptography::decryption() {
+    long long resN = 0;
+    long long resEncrypt_C = 0;
+    long long m = 0;
+    long long resM = 0;
+    resN = n;
     resEncrypt_C = encryption();
     for (resEncrypt_C; resEncrypt_C < resN; resEncrypt_C++) {
         m = (pow(resEncrypt_C, d));
@@ -187,43 +222,48 @@ unsigned int RSA_Cryptography::decryption() {
     return resM;
 }
 
-void RSA_Cryptography::set_length_D() {
-    cout << "Enter length of d: " << endl;
-    cin >> length_d;
-
+void RSA_Cryptography::output() {
+    cout << "p = " << p << endl;
+    cout << "q = " << q << endl;
+    cout << "n = " << n << endl;
+    cout << "phi_n = " << phi_n << endl;
+    cout << "e = " << e << endl;
+    cout << "d = " << d << endl;
+    cout << "Encryption: " << encryption() << endl;
+    cout << "Decryption: " << decryption() << endl;
 }
 
-
-
 int main() {
-    try {
-        RSA_Cryptography rsa;
-        rsa.inputKey();
-        // rsa.check_primality();
-        // rsa.set_length_D();
-        rsa.fermat_testing();
-        cout << "length of d: " << rsa.length_d << endl;
-        cout << "Result of n = p*q : " << rsa.calN() << endl;
-        cout << "Result of phi_n = (p - 1) * (q - 1) : " << rsa.calPhi_n() << endl;
-        cout << "Result of e : " << rsa.calE() << endl;
-        cout << "Result of d as e*d = 1 mod n : " << rsa.calD() << endl;
-        cout << "Encryption: " << rsa.encryption() << endl;
-        cout << "Decryption: " << rsa.decryption() << endl;
+    srand(time(NULL));
+    RSA_Cryptography rsa;
+    rsa.input();
+    cout << "fermat_testing" << endl;
+    rsa.fermat_testing();
+    cout << "RSA" <<endl;
+    cout << rsa.get_p() << endl;
+    cout << rsa.get_q() << endl;
+    rsa.calculate();
 
-    }
-    catch (runtime_error& error) {
-        cout << error.what() << endl;
-    }
+
+    rsa.output();
+
+
     return 0;
 }
 
-// Enter Prime number p: 
-// 3
-// Enter Prime number q:
-// 97
-// Result of n = p*q : 291
-// Result of phi_n = (p - 1) * (q - 1) : 192
-// Result of e : 1998094957
-// Result of d as e*d = 1 mod n : 999047479
-// Encryption: 0
-// Decryption: 0
+
+
+// p = 3
+// q = 97
+// n = 291
+// phi_n = 192
+// e = 1
+// d = 193
+
+
+// p = 3
+// q = 97
+// n = 291
+// phi_n = 192
+// e = 143
+// d = 47
