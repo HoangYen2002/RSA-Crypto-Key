@@ -16,7 +16,7 @@ public:
     unsigned int q;
     unsigned int n; // n = p*q
     unsigned int phi_n; // phi_n = (p-1)*(q-1)
-    unsigned int e; // e < phi_n; e and phi_n co-prime
+    unsigned int e; // e < phi_n; e and phi_n co-primen
     unsigned int d; // (e*d) mod phi_n = 1
 
     //void check_primality();
