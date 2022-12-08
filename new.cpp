@@ -6,6 +6,7 @@
 #include<cstdlib>
 using namespace std;
 
+// file code sử dụng
 
 
 long long random(long long min, long long max) {
