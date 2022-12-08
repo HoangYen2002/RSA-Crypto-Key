@@ -4,7 +4,10 @@
     "*.js": "javascriptreact",
     "ostream": "cpp",
     "iostream": "cpp",
-    "cmath": "cpp"
+    "cmath": "cpp",
+    "bitset": "cpp",
+    "xstring": "cpp",
+    "numeric": "cpp"
   },
   "editor.quickSuggestions": {
     "comments": "off",

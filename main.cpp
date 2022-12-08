@@ -28,13 +28,55 @@ public:
     void set_length_D();
 
     bool check_length_D();
-
+    unsigned int mod_power(unsigned int a, unsigned int b, unsigned int p);
+    void fermat_testing();
 
     unsigned int encryption();
     unsigned int decryption();
 
 };
+unsigned int RSA_Cryptography::mod_power(unsigned int a, unsigned int b, unsigned int p) {
+    if (b == 1) {
+        return a % p;
+    }
+    else {
+        int x = mod_power(a, b / 2, p);
+        if ((b % 2) == 0) { // b is even
+            return (x * x) % p;
+        }
+        else {
+            return (((x * x) % p) * a) % p;
+        }
+    }
+}
+void RSA_Cryptography::fermat_testing() {
+    unsigned int p, q;
+    cout << "Enter Prime number p: " << endl;
+    cin >> p;
+    cout << "Enter Prime number q: " << endl;
+    cin >> q;
 
+    unsigned int a = 2 + rand() % (p - 3);
+    if (gcd(a, p) != 1) {
+        throw (runtime_error("non prime input error!"));
+    }
+    else {
+        if (mod_power(a, p - 1, p) != 1) {
+            throw (runtime_error("non prime input error!"));
+        }
+    }
+    unsigned int b = 2 + rand() % (q - 3);
+    if (gcd(b, q) != 1) {
+        throw (runtime_error("non prime input error!"));
+    }
+    else {
+        if (mod_power(b, q - 1, q) != 1) {
+            throw (runtime_error("non prime input error!"));
+        }
+
+    }
+
+}
 // return bits in decimal
 int get_bits(unsigned int number) {
     long long bits = 0;
@@ -157,8 +199,9 @@ int main() {
     try {
         RSA_Cryptography rsa;
         rsa.inputKey();
-        rsa.check_primality();
-        rsa.set_length_D();
+        // rsa.check_primality();
+        // rsa.set_length_D();
+        rsa.fermat_testing();
         cout << "length of d: " << rsa.length_d << endl;
         cout << "Result of n = p*q : " << rsa.calN() << endl;
         cout << "Result of phi_n = (p - 1) * (q - 1) : " << rsa.calPhi_n() << endl;

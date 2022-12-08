@@ -18,7 +18,7 @@ long long gcd(long long a, long long b) {
     return gcd(b, a % b);
 }
 
-int check_bit_length(long long n) {
+int check_bit_length( long long n) {
     int bits = 0;
     while (n > 0) {
         n >>= 1;
@@ -26,6 +26,8 @@ int check_bit_length(long long n) {
     }
     return bits;
 }
+
+
 
 class RSA_Cryptography
 {
@@ -59,6 +61,9 @@ public:
     long long decryption();
 
 
+    unsigned int mod_power(unsigned int a, unsigned int b, unsigned int p);
+    void fermat_testing();
+
 
 
 };
@@ -71,6 +76,43 @@ bool isPrime(long long n) {
     return true;
 }
 
+
+unsigned int RSA_Cryptography::mod_power(unsigned int a, unsigned int b, unsigned int p) {
+    if (b == 1) {
+        return a % p;
+    }
+    else {
+        int x = mod_power(a, b / 2, p);
+        if ((b % 2) == 0) { // b is even
+            return (x * x) % p;
+        }
+        else {
+            return (((x * x) % p) * a) % p;
+        }
+    }
+}
+void RSA_Cryptography::fermat_testing() {
+    unsigned int a = 2 + rand() % (p - 3);
+    if (gcd(a, p) != 1) {
+        throw (runtime_error("non prime input error!"));
+    }
+    else {
+        if (mod_power(a, p - 1, p) != 1) {
+            throw (runtime_error("non prime input error!"));
+        }
+    }
+    unsigned int b = 2 + rand() % (q - 3);
+    if (gcd(b, q) != 1) {
+        throw (runtime_error("non prime input error!"));
+    }
+    else {
+        if (mod_power(b, q - 1, q) != 1) {
+            throw (runtime_error("non prime input error!"));
+        }
+
+    }
+
+}
 RSA_Cryptography::RSA_Cryptography() {
     p = 0;
     q = 0;
@@ -121,9 +163,9 @@ void RSA_Cryptography::input() {
         cout << "q is not prime, please enter again: " << endl;
         cin >> q;
     }
-    cout << "bit length: 512, 1024, 2048" << endl;
-    cout << "Enter bit length: " << endl;
-    cin >> bit_length;
+    // cout << "bit length: 512, 1024, 2048" << endl;
+    // cout << "Enter bit length: " << endl;
+    // cin >> bit_length;
 }
 
 void RSA_Cryptography::calculate_e() {
@@ -136,17 +178,14 @@ void RSA_Cryptography::calculate_e() {
 }
 
 void RSA_Cryptography::calculate_d() {
-    long long k = 1;
-    // (e*d) = 1 mod phi_n && bit length of d = bit length
-    while (true) {
-        if ((k * phi_n + 1) % e == 0) {
-            d = (k * phi_n + 1) / e;
-            if (check_bit_length(d) == bit_length) {
-                break;
-            }
-        }
+    unsigned int k = 1;
+
+    unsigned int resE = e;
+    while (((k * phi_n) + 1) % resE != 0)
+        // cout << resE << endl;
         k++;
-    }
+    d = ((k * phi_n) + 1) / resE;
+
 }
 
 void RSA_Cryptography::calculate() {
@@ -197,9 +236,14 @@ int main() {
     srand(time(NULL));
     RSA_Cryptography rsa;
     rsa.input();
+    cout << "fermat_testing" << endl;
+    rsa.fermat_testing();
+    cout << "RSA" <<endl;
     cout << rsa.get_p() << endl;
     cout << rsa.get_q() << endl;
     rsa.calculate();
+
+
     rsa.output();
 
 

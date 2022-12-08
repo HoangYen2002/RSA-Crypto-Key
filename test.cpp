@@ -1,40 +1,24 @@
-// print size bits of decimal
 
-#include<iostream>
-#include<cmath>
-#include<ctime>
-#include<cstdlib>
+// C++ program to demonstrate that we can get part of a
+// bit string in bitset.
+#include <bitset>
+#include <string>
+#include <iostream>
 
 using namespace std;
 
-bool isPrime(long long n) {
-    if (n < 2) return false;
-    for (long long i = 2; i <= sqrt(n); i++) {
-        if (n % i == 0) return false;
-    }
-    return true;
+int main()
+{
+  string bit_string = "110010";
+  bitset<8> b1(bit_string);             // [0, 0, 1, 1, 0, 0, 1, 0]
+ 
+  // string from position 2 till end
+  bitset<8> b2(bit_string, 2);      // [0, 0, 0, 0, 0, 0, 1, 0]
+ 
+  // string from position 2 till next 3 positions
+  bitset<8> b3(bit_string, 2, 3);   // [0, 0, 0, 0, 0, 0, 0, 1]
+   
+  cout << b1 << '\n' << b2 << '\n' << b3 << '\n';
+ 
+  return 0;
 }
-int check_bit_length(long long n) {
-    int bits = 0;
-    while (n > 0) {
-        n >>= 1;
-        bits++;
-    }
-    return bits;
-}
-
-
-
-int main() {
-
-    long long n = 100000000;
-    while(!isPrime(n)) {
-        n++;
-    }
-    cout << n << endl;
-    cout << check_bit_length(n) << endl;
-
-
-
-}
-//10000000000000061
